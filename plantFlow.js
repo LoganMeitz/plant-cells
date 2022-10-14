@@ -1,4 +1,4 @@
-import { Plant, Cell } from './plantClasses.js';
+import { Cell } from './plantClasses.js';
 
 const 
   rowCount = 60, 
@@ -35,6 +35,13 @@ const firstSeed = {
   spreadRate: 10,
 }
 
+function clear(){
+  [].concat(...cells).filter(c=>(!!c.plant)).forEach(c=>{
+    c.plant.die();
+    //c.plant = null;
+  });
+}
+
 function plantSeed(){
   const 
     x = Math.floor(Math.random()*columnCount),
@@ -43,15 +50,30 @@ function plantSeed(){
 }
 
 function infectPlant(){
-  const livingCells = ([].concat(...cells).filter(cell=>cell.plant && cell.plant.alive))
-  if (livingCells.length){
-    livingCells[Math.floor(Math.random()*livingCells.length)].receiveInfection();
+  const infectableCells = ([].concat(...cells).filter(cell=>cell.plant && cell.plant.infectable()))
+  if (infectableCells.length){
+    infectableCells[Math.floor(Math.random()*infectableCells.length)].receiveInfection();
   }
 }
 
-const plantButton = document.getElementById('plant');
-const infectButton = document.getElementById('infect');
+function getStats(){
+  const livingCells = [].concat(...cells).filter(cell=>cell.plant && cell.plant.alive);
+  const seeds = livingCells.map(cell=>cell.plant.baseSeed);
+  const statObject = {}
+  Object.keys(firstSeed).forEach(key=>{
+    const statAverage = seeds.map(seed=>seed[key]).reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
+    statObject[key] = Math.round(statAverage*100)/100
+  })
+  console.log(statObject);
+}
+
+const plantButton = document.getElementById('plant-button');
+const infectButton = document.getElementById('infect-button');
+const statsButton = document.getElementById('stats-button');
+const clearButton = document.getElementById('clear-button');
 
 
 plantButton.addEventListener("click",  plantSeed);
 infectButton.addEventListener("click",  infectPlant);
+statsButton.addEventListener("click",  getStats);
+clearButton.addEventListener("click",  clear);

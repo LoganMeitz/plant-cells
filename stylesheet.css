@@ -1,23 +1,26 @@
-html {
+body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   background-color: black;
+  color: white;
   height: 100%;
   width: 100%;
 }
 
-body {
-  height: 60vh;
-  width: 60vh;
-  background-color: lightgray;
+table {
+  border-collapse: collapse;
 }
 
 #board {
   width: 100%;
   height: 100%;
+  height: 60vh;
+  width: 60vh;
+  background-color: lightgray;
 }
 
-table {
-  border-collapse: collapse;
+#stats {
+
 }

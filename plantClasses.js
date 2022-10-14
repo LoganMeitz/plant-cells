@@ -56,7 +56,7 @@ class Plant {
   }
 
   infect(){
-    if(!this.immune) {
+    if(this.infectable()) {
       this.infected = true;
       this.spreadTime = Math.min(Plant.cycleLength/4)
       clearInterval(this.spreadInterval);
@@ -81,6 +81,10 @@ class Plant {
       spreadRate: Plant.mutateScore(this.baseSeed.spreadRate, 1, 20)
     };
     return seed
+  }
+
+  infectable(){
+    return this.alive && !this.immune && !this.infected 
   }
 
   getColour(){
@@ -132,9 +136,7 @@ class Cell {
   }
 
   receiveInfection(){
-    if (!!this.plant && !!this.plant.alive) {
-      this.plant.infect();
-    }
+    if (this.plant && this.plant.infectable()) this.plant.infect();
   }
 
   sendSeed(seed){
