@@ -4,7 +4,10 @@ const
   rowCount = 60, 
   columnCount = 60,
   board = document.getElementById('board'),
-  cells = [];
+  cells = [],
+  statsBlock = document.getElementById('stats');
+
+let statInterval;
 
 function getCellAtCoords({x, y}){
   const coordsInbounds = (x >= 0 && x < columnCount && y >= 0 && y < rowCount);
@@ -36,6 +39,7 @@ const firstSeed = {
 }
 
 function clear(){
+  if (!!statInterval) clearInterval(statInterval);
   [].concat(...cells).filter(c=>(!!c.plant)).forEach(c=>{
     c.plant.die();
     //c.plant = null;
@@ -47,6 +51,9 @@ function plantSeed(){
     x = Math.floor(Math.random()*columnCount),
     y = Math.floor(Math.random()*rowCount);
   getCellAtCoords({x, y}).receiveSeed(firstSeed);
+
+  if (!!statInterval) clearInterval(statInterval);
+  statInterval = setInterval(getStats, 200);
 }
 
 function infectPlant(){
@@ -56,6 +63,7 @@ function infectPlant(){
   }
 }
 
+
 function getStats(){
   const livingCells = [].concat(...cells).filter(cell=>cell.plant && cell.plant.alive);
   const seeds = livingCells.map(cell=>cell.plant.baseSeed);
@@ -64,7 +72,32 @@ function getStats(){
     const statAverage = seeds.map(seed=>seed[key]).reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
     statObject[key] = Math.round(statAverage*100)/100
   })
-  console.log(statObject);
+  updateStatBlock(statObject);
+}
+
+function initStatDisplay(){
+  Object.keys(firstSeed).forEach(key=>{
+    const 
+      divWrapper = document.createElement('div'),
+      label = document.createElement('label'),
+      statDisplay = document.createElement('div');
+    
+      divWrapper.id = `${key}-stat`;
+      label.innerText = key.slice(0,1).toUpperCase()+key.slice(1)
+      statDisplay.classList.add('stat-display')
+
+      divWrapper.appendChild(label);
+      divWrapper.appendChild(statDisplay);
+      statsBlock.appendChild(divWrapper);
+  })
+}
+
+function updateStatBlock(statObject){
+  Object.keys(statObject).forEach(key=>{
+    const divWrapper = document.getElementById(`${key}-stat`);
+    const statDisplay = Array.from(divWrapper.children).find(child=>child.classList.contains('stat-display'))
+    statDisplay.innerText = statObject[key];
+  })
 }
 
 const plantButton = document.getElementById('plant-button');
@@ -72,8 +105,9 @@ const infectButton = document.getElementById('infect-button');
 const statsButton = document.getElementById('stats-button');
 const clearButton = document.getElementById('clear-button');
 
-
 plantButton.addEventListener("click",  plantSeed);
 infectButton.addEventListener("click",  infectPlant);
 statsButton.addEventListener("click",  getStats);
 clearButton.addEventListener("click",  clear);
+
+initStatDisplay();
