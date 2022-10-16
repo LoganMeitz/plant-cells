@@ -78,24 +78,28 @@ function getStats(){
 function initStatDisplay(){
   Object.keys(firstSeed).forEach(key=>{
     const 
-      divWrapper = document.createElement('div'),
-      label = document.createElement('label'),
-      statDisplay = document.createElement('div');
+      statRow = document.createElement('tr'),
+      label = document.createElement('td'),
+      statDisplay = document.createElement('td');
     
-      divWrapper.id = `${key}-stat`;
-      label.innerText = key.slice(0,1).toUpperCase()+key.slice(1)
-      statDisplay.classList.add('stat-display')
+      statRow.id = `${key}-stat`;
+      statRow.classList.add('stat-wrapper');
 
-      divWrapper.appendChild(label);
-      divWrapper.appendChild(statDisplay);
-      statsBlock.appendChild(divWrapper);
+      label.innerText = key.slice(0,1).toUpperCase()+key.slice(1);
+      label.classList.add('stat-label')
+
+      statDisplay.classList.add('stat-display');
+
+      statRow.appendChild(label);
+      statRow.appendChild(statDisplay);
+      statsBlock.appendChild(statRow);
   })
 }
 
 function updateStatBlock(statObject){
   Object.keys(statObject).forEach(key=>{
-    const divWrapper = document.getElementById(`${key}-stat`);
-    const statDisplay = Array.from(divWrapper.children).find(child=>child.classList.contains('stat-display'))
+    const statRow = document.getElementById(`${key}-stat`);
+    const statDisplay = Array.from(statRow.children).find(child=>child.classList.contains('stat-display'))
     statDisplay.innerText = statObject[key];
   })
 }
