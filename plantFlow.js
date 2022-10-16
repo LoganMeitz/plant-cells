@@ -9,11 +9,17 @@ const
 
 let statInterval;
 
+// going to remove this logic
+const firstSeed = {
+  lifespan: 10,
+  immunity: 1,
+  spreadRate: 10,
+}
+
 function getCellAtCoords({x, y}){
   const coordsInbounds = (x >= 0 && x < columnCount && y >= 0 && y < rowCount);
   return coordsInbounds ? cells[y][x] : null;
 }
-
 
 // create board and cell storage
 for (let y = 0; y < rowCount; y++) {
@@ -32,11 +38,7 @@ for (let y = 0; y < rowCount; y++) {
 }
 
 
-const firstSeed = {
-  lifespan: 10,
-  immunity: 1,
-  spreadRate: 10,
-}
+
 
 function clear(){
   if (!!statInterval) clearInterval(statInterval);
@@ -104,14 +106,13 @@ function updateStatBlock(statObject){
   })
 }
 
+// buttons
 const plantButton = document.getElementById('plant-button');
 const infectButton = document.getElementById('infect-button');
-const statsButton = document.getElementById('stats-button');
 const clearButton = document.getElementById('clear-button');
 
 plantButton.addEventListener("click",  plantSeed);
 infectButton.addEventListener("click",  infectPlant);
-statsButton.addEventListener("click",  getStats);
 clearButton.addEventListener("click",  clear);
 
 initStatDisplay();
