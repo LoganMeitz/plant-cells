@@ -1,4 +1,7 @@
-import { Cell } from './plantClasses.js';
+import { Plant } from './common/classes/plant.js'
+import { PlantModel1 } from './common/classes/model1.js'
+import { Cell } from './common/classes/cell.js';
+import { getRandomInt, getPercentage } from './common/helpers.js'
 
 const 
   rowCount = 60, 
@@ -9,12 +12,7 @@ const
 
 let statInterval;
 
-// going to remove this logic
-const firstSeed = {
-  lifespan: 10,
-  immunity: 1,
-  spreadRate: 10,
-}
+Cell.setPlant(PlantModel1);
 
 function getCellAtCoords({x, y}){
   const coordsInbounds = (x >= 0 && x < columnCount && y >= 0 && y < rowCount);
@@ -37,48 +35,39 @@ for (let y = 0; y < rowCount; y++) {
   cells.push(cellRow)
 }
 
+let defaultSeed = {};
 
-
-
-function clear(){
-  if (!!statInterval) clearInterval(statInterval);
-  [].concat(...cells).filter(c=>(!!c.plant)).forEach(c=>{
-    c.plant.die();
-    //c.plant = null;
-  });
-}
+Object.keys(Cell.plantClass.seedData).forEach(key=>{
+  defaultSeed[key] = Cell.plantClass.seedData[key].default;
+})
 
 function plantSeed(){
   const 
-    x = Math.floor(Math.random()*columnCount),
-    y = Math.floor(Math.random()*rowCount);
-  getCellAtCoords({x, y}).receiveSeed(firstSeed);
+    x = getRandomInt(columnCount-1),
+    y = getRandomInt(rowCount-1);
+  getCellAtCoords({x, y}).receiveSeed(defaultSeed);
 
   if (!!statInterval) clearInterval(statInterval);
   statInterval = setInterval(getStats, 200);
 }
 
 function infectPlant(){
-  const infectableCells = ([].concat(...cells).filter(cell=>cell.plant && cell.plant.infectable()))
+  const infectableCells = ([].concat(...cells).filter(cell=>!!cell.plant && cell.plant.infectable()))
   if (infectableCells.length){
-    infectableCells[Math.floor(Math.random()*infectableCells.length)].receiveInfection();
+    infectableCells[getRandomInt(infectableCells.length-1)].receiveInfection();
   }
 }
 
 
-function getStats(){
-  const livingCells = [].concat(...cells).filter(cell=>cell.plant && cell.plant.alive);
-  const seeds = livingCells.map(cell=>cell.plant.baseSeed);
-  const statObject = {}
-  Object.keys(firstSeed).forEach(key=>{
-    const statAverage = seeds.map(seed=>seed[key]).reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
-    statObject[key] = Math.round(statAverage*100)/100
-  })
-  updateStatBlock(statObject);
+function clear(){
+  if (!!statInterval) clearInterval(statInterval);
+  [].concat(...cells).filter(c=>(!!c.plant)).forEach(c=>{
+    c.clear();
+  });
 }
 
 function initStatDisplay(){
-  Object.keys(firstSeed).forEach(key=>{
+  Object.keys(defaultSeed).forEach(key=>{
     const 
       statRow = document.createElement('tr'),
       label = document.createElement('td'),
@@ -96,6 +85,17 @@ function initStatDisplay(){
       statRow.appendChild(statDisplay);
       statsBlock.appendChild(statRow);
   })
+}
+
+function getStats(){
+  const livingCells = [].concat(...cells).filter(cell=>cell.plant && cell.plant.alive);
+  const seeds = livingCells.map(cell=>cell.plant.baseSeed);
+  const statObject = {}
+  Object.keys(defaultSeed).forEach(key=>{
+    const statAverage = seeds.map(seed=>seed[key]).reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
+    statObject[key] = Math.round(statAverage*100)/100
+  })
+  updateStatBlock(statObject);
 }
 
 function updateStatBlock(statObject){
