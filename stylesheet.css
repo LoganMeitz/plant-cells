@@ -24,3 +24,16 @@ table {
 #stats {
 
 }
+
+.stat-display {
+  min-width: 60px;
+}
+
+.stat-bar-container {
+  width: 200px;
+}
+
+.stat-bar{
+  background-color: blue;
+  height: 100%;
+}

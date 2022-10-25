@@ -71,7 +71,9 @@ function initStatDisplay(){
     const 
       statRow = document.createElement('tr'),
       label = document.createElement('td'),
-      statDisplay = document.createElement('td');
+      statDisplay = document.createElement('td'),
+      statBarContainer = document.createElement('td'),
+      statBar = document.createElement('div');
     
       statRow.id = `${key}-stat`;
       statRow.classList.add('stat-wrapper');
@@ -81,8 +83,13 @@ function initStatDisplay(){
 
       statDisplay.classList.add('stat-display');
 
+      statBarContainer.classList.add('stat-bar-container');
+      statBar.classList.add('stat-bar');
+
       statRow.appendChild(label);
       statRow.appendChild(statDisplay);
+      statRow.appendChild(statBarContainer);
+      statBarContainer.appendChild(statBar);
       statsBlock.appendChild(statRow);
   })
 }
@@ -101,8 +108,13 @@ function getStats(){
 function updateStatBlock(statObject){
   Object.keys(statObject).forEach(key=>{
     const statRow = document.getElementById(`${key}-stat`);
-    const statDisplay = Array.from(statRow.children).find(child=>child.classList.contains('stat-display'))
+    const statDisplay = Array.from(statRow.children).find(child=>child.classList.contains('stat-display'));
+    const statBarContainer = Array.from(statRow.children).find(child=>child.classList.contains('stat-bar-container'));
+    const statBar = Array.from(statBarContainer.children).find(child=>child.classList.contains('stat-bar'));
     statDisplay.innerText = statObject[key];
+    const statPercentage = `${getPercentage(statObject[key], PlantModel1.seedData[key].min, PlantModel1.seedData[key].max)}%`
+    statBar.style.width = statPercentage;
+    statBar.innerText = statPercentage;
   })
 }
 
