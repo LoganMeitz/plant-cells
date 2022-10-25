@@ -34,3 +34,7 @@ table {
   background-color: blue;
   height: 100%;
 }
+
+.description {
+  width: 60vw;
+}
