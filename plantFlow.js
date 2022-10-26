@@ -1,5 +1,6 @@
 import { Plant } from './common/classes/plant.js'
 import { PlantModel1 } from './common/classes/model1.js'
+import { PlantModel2 } from './common/classes/model2.js'
 import { Cell } from './common/classes/cell.js';
 import { getRandomInt, getPercentage } from './common/helpers.js'
 
@@ -12,7 +13,7 @@ const
 
 let statInterval;
 
-Cell.setPlant(PlantModel1);
+Cell.setPlant(PlantModel2);
 
 function getCellAtCoords({x, y}){
   const coordsInbounds = (x >= 0 && x < columnCount && y >= 0 && y < rowCount);
@@ -54,7 +55,7 @@ function plantSeed(){
 function infectPlant(){
   const infectableCells = ([].concat(...cells).filter(cell=>!!cell.plant && cell.plant.infectable()))
   if (infectableCells.length){
-    infectableCells[getRandomInt(infectableCells.length-1)].receiveInfection();
+    infectableCells[getRandomInt(infectableCells.length-1)].receiveInfection(true);
   }
 }
 
@@ -112,7 +113,7 @@ function updateStatBlock(statObject){
     const statBarContainer = Array.from(statRow.children).find(child=>child.classList.contains('stat-bar-container'));
     const statBar = Array.from(statBarContainer.children).find(child=>child.classList.contains('stat-bar'));
     statDisplay.innerText = statObject[key];
-    const statPercentage = `${getPercentage(statObject[key], PlantModel1.seedData[key].min, PlantModel1.seedData[key].max)}%`
+    const statPercentage = `${getPercentage(statObject[key], Cell.plantClass.seedData[key].min, Cell.plantClass.seedData[key].max)}%`
     statBar.style.width = statPercentage;
     statBar.innerText = statPercentage;
   })

@@ -37,8 +37,8 @@ class Cell {
     }
   }
 
-  receiveInfection(){
-    if (this.plant && this.plant.infectable()) this.plant.infect();
+  receiveInfection(force = false){
+    if (this.plant && (this.plant.infectable() || force)) this.plant.infect();
   }
 
   sendSeed(seed){

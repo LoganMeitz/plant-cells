@@ -1,24 +1,24 @@
 import { getRandomInt, getPercentage } from '../helpers.js'
 import { Plant } from './plant.js'
 
-class PlantModel1 extends Plant {
+class PlantModel2 extends Plant {
 
   static decayTime = 250;
   static seedData = {
     lifespan: {
       min: 1,
       max: 20,
-      default: 5,
+      default: 10,
     },
-    immunity: {
+    resistence: {
       min: 1,
-      max: 30,
+      max: 50,
       default: 1,
     },
     spreadRate: {
       min: 1,
       max: 20,
-      default: 5,
+      default: 10,
     },
   }
 
@@ -27,7 +27,7 @@ class PlantModel1 extends Plant {
 
   lifespan;
   spreadTime;
-  immune;
+  resistence;
 
   spreadInterval;
   deathTimeout;
@@ -45,7 +45,8 @@ class PlantModel1 extends Plant {
     this.lifespan = seed.lifespan;
     this.spreadTime = Math.ceil((this.constructor.cycleLength*10)/seed.spreadRate)
 
-    this.immune = (seed.immunity*2) > Math.ceil(Math.random()*100);
+    this.resistence = seed.resistence;
+    //this.immune = (seed.immunity*2) > Math.ceil(Math.random()*100);
     
     this.spreadInterval = setInterval(this.spread.bind(this), this.spreadTime);
     this.timeouts.push(setTimeout(this.decay.bind(this), this.lifespan*this.constructor.cycleLength));
@@ -68,34 +69,53 @@ class PlantModel1 extends Plant {
   }
 
   infect(){
-    if(this.infectable()) {
-      this.infected = true;
-      this.spreadTime = Math.min(this.constructor.cycleLength/4)
-      clearInterval(this.spreadInterval);
-      this.spreadInterval = setInterval(this.spread.bind(this), this.spreadTime);
-      this.timeouts.push(setTimeout(this.die.bind(this), this.constructor.cycleLength*2));
-      this.update();
-    }
+    this.infected = true;
+    this.spreadTime = Math.min(this.constructor.cycleLength/4)
+    clearInterval(this.spreadInterval);
+    this.spreadInterval = setInterval(this.spread.bind(this), this.spreadTime);
+    this.timeouts.push(setTimeout(this.die.bind(this), this.constructor.cycleLength*2));
+    this.update();
   }
 
   infectable(){
-    return this.alive && !this.immune && !this.infected 
+    return this.alive && !this.infected && (this.resistence*2) < Math.ceil(Math.random()*100)
   }
 
   plantable(){
     return this.decayed;
   }
 
+  // getColour(){
+  //   return (
+  //     this.infected 
+  //       ? this.alive 
+  //         ? 'purple'
+  //         : '#59402a' 
+  //       : `rgb(0, ${170-this.resistence*2}, 0)`
+  //   )
+  // }
+
   getColour(){
-    return (
-    !!this.alive 
-      ? !!this.infected 
-        ? 'purple' 
-        : !!this.immune
-          ? 'rgb(0, 90, 0)'
-          : 'rgb(0, 150, 0)' 
-      : '#59402a' 
-    )
+    let 
+      red = 0, 
+      green = 170-this.resistence*2, 
+      blue = 0;
+    
+    if (!this.alive) {
+      red += Math.round(green/3)
+    }
+    
+    if (this.infected) {
+      green = Math.round(green/2);
+      blue += Math.round(green/2);
+      red += green;
+      if (this.alive) {
+        blue += Math.round(green/2);
+        green = 0;
+      }
+    }
+
+    return `rgb(${red}, ${green}, ${blue})`
   }
 
   decommission(){
@@ -106,4 +126,4 @@ class PlantModel1 extends Plant {
   }
 }
 
-export { PlantModel1 }
+export { PlantModel2 }
