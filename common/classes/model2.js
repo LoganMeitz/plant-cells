@@ -111,6 +111,7 @@ class PlantModel2 extends Plant {
   decommission(){
     this.alive = false;
     this.decayed = true;
+    this.queueEvent = [];
   }
 }
 

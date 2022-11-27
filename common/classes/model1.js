@@ -99,6 +99,7 @@ class PlantModel1 extends Plant {
   decommission(){
     this.alive = false;
     this.decayed = true;
+    this.queueEvent.length = 0;
   }
 }
 

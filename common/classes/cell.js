@@ -85,8 +85,13 @@ class Cell {
   }
 
   clear(){
-    if (this.plant) this.plant.decommission();
-    this.setElementColour(null);
+    if (this.plant) {
+      this.plant.decommission();
+      delete this.plant;
+      this.plant = null;
+      this.setElementColour(null);
+    }
+    
   }
 
 }
