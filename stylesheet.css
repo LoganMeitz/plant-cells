@@ -29,6 +29,11 @@ body {
   padding: 1.5em 0;
 }
 
+h2, h1 {
+  text-align: center;
+  width: 100%;
+}
+
 .section {
   padding: 1em 2em;
 }
@@ -76,7 +81,7 @@ button:active {
 }
 
 #button-tray {
-  background-color: #2E1E34;
+  background-color: #221627;
   display: flex;
   flex-direction: row;
   column-gap: 1em;
@@ -87,12 +92,38 @@ button:active {
   flex: 1 1 auto;
 }
 
+#stat-window {
+
+}
+
+#stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5em;
+}
+
+
+
+.stat-wrapper{
+  display: flex;
+  flex-direction: row;
+
+}
+
+.stat-label {
+  flex: 0 0 6em;
+}
+
 .stat-display {
   min-width: 60px;
+  flex: 0 0 4em;
 }
 
 .stat-bar-container {
-  width: 200px;
+  flex: 0 0 60%;
+  width: 100%;
+  height: 100%;
   background-color: #CDE3BF;
   border-radius: 5px;
   padding: 0;
@@ -104,13 +135,4 @@ button:active {
   border-radius: 5px;
   height: 100%;
   color: #170F1A;
-}
-
-#stat-window {
-
-}
-
-h2, h1 {
-  text-align: center;
-  width: 100%;
 }

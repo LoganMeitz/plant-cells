@@ -79,10 +79,10 @@ function updatePlants(){
 function initStatDisplay(){
   Object.keys(defaultSeed).forEach(key=>{
     const 
-      statRow = document.createElement('tr'),
-      label = document.createElement('td'),
-      statDisplay = document.createElement('td'),
-      statBarContainer = document.createElement('td'),
+      statRow = document.createElement('div'),
+      label = document.createElement('div'),
+      statDisplay = document.createElement('div'),
+      statBarContainer = document.createElement('div'),
       statBar = document.createElement('div');
     
       statRow.id = `${key}-stat`;
