@@ -46,7 +46,7 @@ class PlantModel2 extends Plant {
     this.resistence = seed.resistence;
 
     this.queueEvent(this.spreadTime, this.spreadEvent.bind(this));
-    this.queueEvent(this.lifespan*this.constructor.cycleLength, this.decay.bind(this));
+    this.queueEvent(this.lifespan*this.constructor.cycleLength, this.die.bind(this));
 
   }
 
@@ -61,11 +61,11 @@ class PlantModel2 extends Plant {
     if (this.alive) {
       this.alive = false;
       this.update();
+      this.queueEvent(this.constructor.cycleLength*6, this.decay.bind(this));
     }
   }
 
   decay(){
-    this.alive = false;
     this.decayed = true;
     this.update();
   }
@@ -82,7 +82,7 @@ class PlantModel2 extends Plant {
   }
 
   plantable(){
-    return this.decayed;
+    return this.decayed || (!this.alive && !this.infected);
   }
 
   getColour(){
@@ -95,7 +95,7 @@ class PlantModel2 extends Plant {
       red += Math.round(green/3)
     }
     
-    if (this.infected) {
+    if (this.infected || this.decayed) {
       green = Math.round(green/2);
       blue += Math.round(green/2);
       red += green;
