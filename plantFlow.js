@@ -24,11 +24,16 @@ function getCellAtCoords({x, y}){
 // create board and cell storage
 for (let y = 0; y < rowCount; y++) {
   const 
-    row = document.createElement('tr'),
+    row = document.createElement('div'),
     cellRow = [];
 
+  row.classList.add('row');
+
   for (let x = 0; x < rowCount; x++) {
-    const cellElement = document.createElement('td');
+    const cellElement = document.createElement('div');
+
+    cellElement.classList.add('cell');
+
     row.appendChild(cellElement);
     cellRow.push(new Cell(cellElement, x, y, getCellAtCoords));
   }

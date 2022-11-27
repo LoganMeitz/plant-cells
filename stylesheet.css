@@ -43,8 +43,26 @@ h2, h1 {
   width: 100%;
   aspect-ratio: 1/1;
   background-color: #E7ECD5;
-  border-collapse: collapse;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0;
+  align-items: stretch;
+  align-content: stretch;
 }
+
+.row {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  column-gap: 0;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.cell {
+  flex: 1 1 auto;
+}
+
 
 .description {
 }
