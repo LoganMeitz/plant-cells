@@ -46,7 +46,6 @@ class PlantModel2 extends Plant {
     this.resistence = seed.resistence;
 
     this.queueEvent(this.spreadTime, this.spreadEvent.bind(this));
-
     this.queueEvent(this.lifespan*this.constructor.cycleLength, this.decay.bind(this));
 
   }
