@@ -138,3 +138,4 @@ infectButton.addEventListener("click",  infectPlant);
 clearButton.addEventListener("click",  clear);
 
 initStatDisplay();
+updateStatBlock(defaultSeed);
