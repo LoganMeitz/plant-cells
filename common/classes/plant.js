@@ -21,6 +21,7 @@ class Plant {
 
   baseSeed;
 
+  eventQueue = [];
   
   constructor(){}
 
@@ -58,6 +59,22 @@ class Plant {
     })
 
     return seed;
+  }
+
+  queueEvent(time, executable){
+    const event = {
+      time: Date.now() + time,
+      execute: executable,
+    }
+    this.eventQueue.push(event);
+    this.eventQueue.sort((a, b)=>a.time-b.time);
+  }
+
+  checkEvents(){
+    while (this.eventQueue.length && this.eventQueue[0].time < Date.now()) {
+      const eventToExecute = this.eventQueue.shift();
+      eventToExecute.execute();
+    }
   }
 
 

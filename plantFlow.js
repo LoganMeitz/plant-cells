@@ -12,6 +12,7 @@ const
   statsBlock = document.getElementById('stats');
 
 let statInterval;
+let updateInterval;
 
 Cell.setPlant(PlantModel2);
 
@@ -50,6 +51,9 @@ function plantSeed(){
 
   if (!!statInterval) clearInterval(statInterval);
   statInterval = setInterval(getStats, 200);
+
+  if (!!updateInterval) clearInterval(updateInterval);
+  updateInterval = setInterval(updatePlants, 20);
 }
 
 function infectPlant(){
@@ -59,12 +63,17 @@ function infectPlant(){
   }
 }
 
-
 function clear(){
   if (!!statInterval) clearInterval(statInterval);
   [].concat(...cells).filter(c=>(!!c.plant)).forEach(c=>{
     c.clear();
   });
+}
+
+function updatePlants(){
+  [].concat(...cells).forEach(cell=>{
+    cell.checkEvents();
+  })
 }
 
 function initStatDisplay(){

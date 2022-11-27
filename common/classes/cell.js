@@ -53,9 +53,15 @@ class Cell {
     if (!!cellToSpread) cellToSpread.receiveInfection();
   }
 
+  checkEvents(){
+    if (!!this.plant) {
+      this.plant.checkEvents();
+      const colour = this.plant.getColour();
+      this.setElementColour(colour)
+    }
+  }
+
   updatePlant(){
-    const colour = this.plant.getColour()
-    if (!!this.plant) this.setElementColour(colour)
   }
 
   getNearbyCoords(){

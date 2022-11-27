@@ -23,13 +23,11 @@ class PlantModel2 extends Plant {
   }
 
   decayed = false;
-  timeouts = [];
 
   lifespan;
   spreadTime;
   resistence;
 
-  spreadInterval;
   deathTimeout;
 
   constructor(seed, updateCallback, spreadCallback, infectCallback) {
@@ -46,23 +44,28 @@ class PlantModel2 extends Plant {
     this.spreadTime = Math.ceil((this.constructor.cycleLength*10)/seed.spreadRate)
 
     this.resistence = seed.resistence;
-    //this.immune = (seed.immunity*2) > Math.ceil(Math.random()*100);
-    
-    this.spreadInterval = setInterval(this.spread.bind(this), this.spreadTime);
-    this.timeouts.push(setTimeout(this.decay.bind(this), this.lifespan*this.constructor.cycleLength));
+
+    this.queueEvent(this.spreadTime, this.spreadEvent.bind(this));
+
+    this.queueEvent(this.lifespan*this.constructor.cycleLength, this.decay.bind(this));
+
+  }
+
+  spreadEvent(){
+    if (this.alive) {
+      this.spread();
+      this.queueEvent(this.spreadTime, this.spreadEvent.bind(this));
+    }
   }
 
   die(){
-    this.alive = false;
-    clearInterval(this.spreadInterval);
-    this.timeouts.forEach(timeout=>clearTimeout(timeout));
-    this.timeouts = [setTimeout(this.decay.bind(this), this.constructor.decayTime)];
-    this.update();
+    if (this.alive) {
+      this.alive = false;
+      this.update();
+    }
   }
 
   decay(){
-    clearInterval(this.spreadInterval);
-    this.timeouts.forEach(timeout=>clearTimeout(timeout));
     this.alive = false;
     this.decayed = true;
     this.update();
@@ -71,9 +74,7 @@ class PlantModel2 extends Plant {
   infect(){
     this.infected = true;
     this.spreadTime = Math.min(this.constructor.cycleLength/4)
-    clearInterval(this.spreadInterval);
-    this.spreadInterval = setInterval(this.spread.bind(this), this.spreadTime);
-    this.timeouts.push(setTimeout(this.die.bind(this), this.constructor.cycleLength*2));
+    this.queueEvent(this.constructor.cycleLength*2, this.die.bind(this));
     this.update();
   }
 
@@ -84,16 +85,6 @@ class PlantModel2 extends Plant {
   plantable(){
     return this.decayed;
   }
-
-  // getColour(){
-  //   return (
-  //     this.infected 
-  //       ? this.alive 
-  //         ? 'purple'
-  //         : '#59402a' 
-  //       : `rgb(0, ${170-this.resistence*2}, 0)`
-  //   )
-  // }
 
   getColour(){
     let 
@@ -121,8 +112,6 @@ class PlantModel2 extends Plant {
   decommission(){
     this.alive = false;
     this.decayed = true;
-    if (this.spreadInterval) clearInterval(this.spreadInterval);
-    this.timeouts.forEach(timeout=>clearTimeout(timeout));
   }
 }
 
