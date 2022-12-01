@@ -20,7 +20,10 @@ class PlantModel1 extends Plant {
       max: 20,
       default: 5,
     },
-  }
+  };
+
+  static title = 'Immunity Model';
+  static description = 'The first plant version. Plants have a chance to be immune to infection, based on their immunity stat. Immune plants are dark green, while vulnerable plants are a lighter colour'
 
   decayed = false;
 
@@ -99,7 +102,7 @@ class PlantModel1 extends Plant {
   decommission(){
     this.alive = false;
     this.decayed = true;
-    this.queueEvent.length = 0;
+    this.queueEvent = [];
   }
 }
 

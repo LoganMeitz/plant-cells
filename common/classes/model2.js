@@ -1,4 +1,3 @@
-import { getRandomInt, getPercentage } from '../helpers.js'
 import { Plant } from './plant.js'
 
 class PlantModel2 extends Plant {
@@ -21,6 +20,9 @@ class PlantModel2 extends Plant {
       default: 10,
     },
   }
+
+  static title = 'Resistence Model';
+  static description = 'This type of plant has a sliding scale of resistence to infection. The higher the resistence, the less likely a plant is to be infected. Higher resistence plants are darker green.'
 
   decayed = false;
 

@@ -9,8 +9,11 @@ class Plant {
     return Math.min(Math.max(score + scoreChange, min), max);
   }
 
-  static cycleLength = 120
-  static seedData = {}
+  static cycleLength = 120;
+  static seedData = {};
+
+  static title = 'Default Model';
+  static description = 'A generic plant intended as a base for other models. This should only appear in error.'
 
   alive = true;
   infected = false;

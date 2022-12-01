@@ -67,6 +67,36 @@ h2, h1 {
 .description {
 }
 
+#plant-selection {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+#plant-list {
+  color: #170F1A;
+  background-color: #CDE3BF;
+
+  font-size: 16px;
+  text-decoration: bold;
+  font-weight: bold;
+  text-align: center;
+
+  border-radius: 5px;
+  padding: 12px;
+  width: 100%;
+
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+}
+
+#plant-list > option :hover {
+  color: #170F1A;
+  background-color: #99DC65;
+}
+
+
 button {
   display: inline-block;
   border: none;

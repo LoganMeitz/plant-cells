@@ -14,7 +14,8 @@ const
 let statInterval;
 let updateInterval;
 
-Cell.setPlant(PlantModel2);
+const plantModels = [PlantModel1, PlantModel2];
+const defaultModel = PlantModel2.title;
 
 function getCellAtCoords({x, y}){
   const coordsInbounds = (x >= 0 && x < columnCount && y >= 0 && y < rowCount);
@@ -44,9 +45,37 @@ for (let y = 0; y < rowCount; y++) {
 
 let defaultSeed = {};
 
-Object.keys(Cell.plantClass.seedData).forEach(key=>{
-  defaultSeed[key] = Cell.plantClass.seedData[key].default;
-})
+// build model selection
+const plantSelector = document.getElementById('plant-list');
+const plantDescription = document.getElementById('selected-plant')
+plantModels.forEach(plantModel=>{
+  const option = document.createElement('option');
+  option.innerText = plantModel.title;
+  option.value = plantModel.title;
+  if (plantModel.title === defaultModel) option.selected = true;
+  plantSelector.appendChild(option);
+});
+
+plantSelector.addEventListener('change', (event)=>{
+  changePlantModel(getModelFromTitle(event.target.value));
+});
+
+function getModelFromTitle(title){
+  return plantModels.find(model=>model.title === title) || Plant;
+}
+
+function changePlantModel(plantModel){
+  clear();
+  Cell.setPlant(plantModel);
+  defaultSeed = {};
+  Object.keys(Cell.plantClass.seedData).forEach(key=>{
+    defaultSeed[key] = Cell.plantClass.seedData[key].default;
+  })
+  plantDescription.innerText = plantModel.description;
+  clearStatDisplay();
+  initStatDisplay();
+  updateStatBlock(defaultSeed);
+}
 
 function plantSeed(){
   const 
@@ -79,6 +108,10 @@ function updatePlants(){
   [].concat(...cells).forEach(cell=>{
     cell.checkEvents();
   })
+}
+
+function clearStatDisplay(){
+  statsBlock.innerHTML="";
 }
 
 function initStatDisplay(){
@@ -114,7 +147,10 @@ function getStats(){
   const seeds = livingCells.map(cell=>cell.plant.baseSeed);
   const statObject = {}
   Object.keys(defaultSeed).forEach(key=>{
-    const statAverage = seeds.map(seed=>seed[key]).reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
+    const statAverage = !!seeds.length
+      && seeds.map(seed=>seed[key])
+        .reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
+      || defaultSeed[key];
     statObject[key] = Math.round(statAverage*100)/100
   })
   updateStatBlock(statObject);
@@ -133,6 +169,8 @@ function updateStatBlock(statObject){
   })
 }
 
+changePlantModel(PlantModel2);
+
 // buttons
 const plantButton = document.getElementById('plant-button');
 const infectButton = document.getElementById('infect-button');
@@ -141,6 +179,3 @@ const clearButton = document.getElementById('clear-button');
 plantButton.addEventListener("click",  plantSeed);
 infectButton.addEventListener("click",  infectPlant);
 clearButton.addEventListener("click",  clear);
-
-initStatDisplay();
-updateStatBlock(defaultSeed);
