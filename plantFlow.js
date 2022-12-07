@@ -1,6 +1,7 @@
 import { Plant } from './common/classes/plant.js'
 import { PlantModel1 } from './common/classes/model1.js'
 import { PlantModel2 } from './common/classes/model2.js'
+import { PlantModel3 } from './common/classes/model3.js'
 import { Cell } from './common/classes/cell.js';
 import { getRandomInt, getPercentage } from './common/helpers.js'
 
@@ -14,7 +15,7 @@ const
 let statInterval;
 let updateInterval;
 
-const plantModels = [PlantModel1, PlantModel2];
+const plantModels = [PlantModel1, PlantModel2, PlantModel3];
 const defaultModel = PlantModel2.title;
 
 function getCellAtCoords({x, y}){
