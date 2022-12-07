@@ -4,13 +4,14 @@ import { PlantModel2 } from './common/classes/model2.js'
 import { PlantModel3 } from './common/classes/model3.js'
 import { Cell } from './common/classes/cell.js';
 import { getRandomInt, getPercentage } from './common/helpers.js'
+import { StatBlock } from './statBlock.js'
 
 const 
   rowCount = 60, 
   columnCount = 60,
   board = document.getElementById('board'),
   cells = [],
-  statsBlock = document.getElementById('stats');
+  statsBlock = new StatBlock(document.getElementById('stats'));
 
 let statInterval;
 let updateInterval;
@@ -73,9 +74,7 @@ function changePlantModel(plantModel){
     defaultSeed[key] = Cell.plantClass.seedData[key].default;
   })
   plantDescription.innerText = plantModel.description;
-  clearStatDisplay();
-  initStatDisplay();
-  updateStatBlock(defaultSeed);
+  statsBlock.initStatDisplay(defaultSeed);
 }
 
 function plantSeed(){
@@ -111,63 +110,8 @@ function updatePlants(){
   })
 }
 
-function clearStatDisplay(){
-  statsBlock.innerHTML="";
-}
-
-function initStatDisplay(){
-  Object.keys(defaultSeed).forEach(key=>{
-    const 
-      statRow = document.createElement('div'),
-      label = document.createElement('div'),
-      statDisplay = document.createElement('div'),
-      statBarContainer = document.createElement('div'),
-      statBar = document.createElement('div');
-    
-      statRow.id = `${key}-stat`;
-      statRow.classList.add('stat-wrapper');
-
-      label.innerText = key.slice(0,1).toUpperCase()+key.slice(1);
-      label.classList.add('stat-label')
-
-      statDisplay.classList.add('stat-display');
-
-      statBarContainer.classList.add('stat-bar-container');
-      statBar.classList.add('stat-bar');
-
-      statRow.appendChild(label);
-      statRow.appendChild(statDisplay);
-      statRow.appendChild(statBarContainer);
-      statBarContainer.appendChild(statBar);
-      statsBlock.appendChild(statRow);
-  })
-}
-
 function getStats(){
-  const livingCells = [].concat(...cells).filter(cell=>cell.plant && cell.plant.alive);
-  const seeds = livingCells.map(cell=>cell.plant.baseSeed);
-  const statObject = {}
-  Object.keys(defaultSeed).forEach(key=>{
-    const statAverage = !!seeds.length
-      && seeds.map(seed=>seed[key])
-        .reduce((previousValue, currentValue) => previousValue + currentValue)/seeds.length
-      || defaultSeed[key];
-    statObject[key] = Math.round(statAverage*100)/100
-  })
-  updateStatBlock(statObject);
-}
-
-function updateStatBlock(statObject){
-  Object.keys(statObject).forEach(key=>{
-    const statRow = document.getElementById(`${key}-stat`);
-    const statDisplay = Array.from(statRow.children).find(child=>child.classList.contains('stat-display'));
-    const statBarContainer = Array.from(statRow.children).find(child=>child.classList.contains('stat-bar-container'));
-    const statBar = Array.from(statBarContainer.children).find(child=>child.classList.contains('stat-bar'));
-    statDisplay.innerText = statObject[key];
-    const statPercentage = `${getPercentage(statObject[key], Cell.plantClass.seedData[key].min, Cell.plantClass.seedData[key].max)}%`
-    statBar.style.width = statPercentage;
-    statBar.innerText = statPercentage;
-  })
+  statBlock.crunchStats([].concat(...cells));
 }
 
 changePlantModel(PlantModel2);
