@@ -47,7 +47,7 @@ class PlantModel1 extends Plant {
     this.immune = (seed.immunity*2) > Math.ceil(Math.random()*100);
     
     this.queueEvent(this.spreadTime, this.spreadEvent.bind(this));
-    this.queueEvent(this.lifespan*this.constructor.cycleLength, this.decay.bind(this));
+    this.queueEvent(this.lifespan*this.constructor.cycleLength, this.die.bind(this));
   }
 
   spreadEvent(){
@@ -61,6 +61,7 @@ class PlantModel1 extends Plant {
     if (this.alive) {
       this.alive = false;
       this.update();
+      this.queueEvent(this.constructor.cycleLength*4, this.decay.bind(this));
     }
   }
 
@@ -84,12 +85,12 @@ class PlantModel1 extends Plant {
   }
 
   plantable(){
-    return this.decayed;
+    return this.decayed || (!this.alive && !this.infected);
   }
 
   getColour(){
     return (
-    !!this.alive 
+    !this.decayed 
       ? !!this.infected 
         ? 'purple' 
         : !!this.immune
