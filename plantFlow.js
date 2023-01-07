@@ -111,7 +111,7 @@ function updatePlants(){
 }
 
 function getStats(){
-  statBlock.crunchStats([].concat(...cells));
+  statsBlock.crunchStats([].concat(...cells));
 }
 
 changePlantModel(PlantModel2);
